@@ -1,9 +1,9 @@
 # Tiny Tapeout project information
 project:
-  title:        "EP Sensor v7 (placeholder for 2-3 week analog re-floorplan)"
+  title:        "EP Sensor v7 (symmetric in-place thicken, Zhao-compliant)"
   author:       "Thomas Gilbert"
   discord:      ""
-  description:  "v7 placeholder = v6 chip + V7_PLAN.md roadmap. Real v7 needs analog block re-floorplan to move 6 cells out of L2 spiral footprint, then aggressive 3-turn w=15 spirals + figure-8 L2 + NMOS source follower OTA."
+  description:  "v7 = v2 baseline + PGS strip + symmetric DELTA=0.8 in-place spiral thicken with cap_mim keepout. Both spirals widened equally (11.6um vertical / 6.6um horizontal), preserving Zhao chiral EP symmetry. Q ~5.7 at 3 GHz, predicted to resolve cv-bits b4-b6."
   language:     "Analog"
   clock_hz:     0
 
