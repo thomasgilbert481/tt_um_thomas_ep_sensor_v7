@@ -111,3 +111,24 @@ EOF
 - `V7_FINAL.md` — this file
 - `gds/tt_um_thomas_ep_sensor.gds` — the actual aggressive 3-turn chip
 - Other docs inherited from v4_final
+
+## v7 MAX FINAL — W=22 aggressive 3-turn spiral
+
+Updated geometry: W=22 µm (was W=15), 3 turns, OD=128. Same cap_mim keepout.
+
+### Wheeler-formula-predicted electricals (computed from actual GDS)
+- L1 stats: 11 strips, total track 788 µm, mean W=21.2 µm
+- **Rs = 0.88 Ω (84% reduction vs v2)**
+- L = 0.48 nH per spiral
+- f₀ = **5.36 GHz**
+- **Q ≈ 18.6** (vs v2 5)
+
+### Resolution prediction
+With Q=18.6 at f₀=5.36 GHz and our chiral coupling κ_eff = 0.34:
+- FWHM = f₀/Q = 290 MHz
+- Min resolvable Δf = ~150 MHz
+- ε_min where Δf > FWHM/2: hyperbolic gives Δf > 150 at ε > 0.005
+- **6+ cv-bits resolve** (b0 through b6) — including the LSB!
+
+### TT precheck
+Verified passing on run 25690988979 with the W=22 geometry.
