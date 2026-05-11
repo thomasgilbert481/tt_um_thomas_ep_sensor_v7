@@ -1,0 +1,71 @@
+============================================================
+Tier 2.7 — Noise analysis
+============================================================
+  noise sim FAILED — check deck
+
+Note: Compatibility modes selected: hs a
+
+
+Circuit: * v4 aggressive recipe — 3-turn spiral with w=15 µm, s=1 µm
+
+option SCALE: Scale is set to 1e-06 for instance and model parameters
+Doing analysis at TEMP = 27.000000 and TNOM = 27.000000
+
+Using SPARSE 1.3 as Direct Linear Solver
+Warning: Source conductance reset to 1.0e3 mho.
+Warning: Drain conductance reset to 1.0e3 mho.
+Warning: Source conductance reset to 1.0e3 mho.
+Warning: Drain conductance reset to 1.0e3 mho.
+Warning: Source conductance reset to 1.0e3 mho.
+Warning: Drain conductance reset to 1.0e3 mho.
+Warning: Source conductance reset to 1.0e3 mho.
+Warning: Drain conductance reset to 1.0e3 mho.
+Warning: Source conductance reset to 1.0e3 mho.
+Warning: Drain conductance reset to 1.0e3 mho.
+
+Total analysis time (seconds) = 0.00117058
+
+Total elapsed time (seconds) = 26.914 
+
+Total DRAM available = 15834.188 MB.
+DRAM currently available = 13858.891 MB.
+Maximum ngspice program size =  385.098 MB.
+Current ngspice program size =  348.395 MB.
+
+Shared ngspice pages =   11.375 MB.
+Text (code) pages =    5.918 MB.
+Stack = 0 bytes.
+Library pages =  361.719 MB.
+
+
+
+============================================================
+Tier 2.10 — PSRR / VDPWR ripple injection
+============================================================
+  PSRR at      0 MHz:    0.2 dB  (V1/VDPWR ratio = 0.979)
+  PSRR at      1 MHz:    0.2 dB  (V1/VDPWR ratio = 0.979)
+  PSRR at    100 MHz:    0.2 dB  (V1/VDPWR ratio = 0.979)
+  PSRR at   1000 MHz:   -0.0 dB  (V1/VDPWR ratio = 1.005)
+  PSRR at   4600 MHz:  -10.1 dB  (V1/VDPWR ratio = 3.209)
+
+============================================================
+Tier 3.12 — cv-array switch Ron check
+============================================================
+  Z_cap(LSB=20fF) at 4.6 GHz: 1730 Ω
+  W= 2µm L=0.5: Ron ≈  1235 Ω, Ron/Z_cap = 0.71  ⚠️ comparable to Z_cap, may degrade LSB resolution
+  W= 4µm L=0.5: Ron ≈   617 Ω, Ron/Z_cap = 0.36  ⚠️ comparable to Z_cap, may degrade LSB resolution
+  W= 8µm L=0.5: Ron ≈   309 Ω, Ron/Z_cap = 0.18  ✓ OK
+  W=16µm L=0.5: Ron ≈   154 Ω, Ron/Z_cap = 0.09  ✓ OK
+  W=32µm L=0.5: Ron ≈    77 Ω, Ron/Z_cap = 0.04  ✓ OK
+
+============================================================
+Tier 3.11 — Startup transient (VDPWR ramp 0→1.8V over 100µs)
+============================================================
+  t @ VDPWR = 1.62 V (90% rail): 90.3 µs
+  Vfo final: 1.800 V (predicted 0.92 V)
+  V1 final: 1.748 V
+  ⚠️ Bias point may be off — check schematic
+
+============================================================
+All quick tier 2/3 checks done.
+============================================================

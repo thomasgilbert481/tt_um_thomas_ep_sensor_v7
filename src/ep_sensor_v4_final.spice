@@ -1,0 +1,52 @@
+* v4 FINAL — Changes 1 + 2 (in-place spiral thicken)
+* Predicted silicon parameters after w=11.2 µm, s=0.8 µm spiral:
+
+.lib /foss/pdks/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+VVDD VDPWR  GND 1.8
+Vbn  Vbn_   GND 0.70
+Vbnl Vbnl_  GND 0.65
+Vbmid Vbmid_ GND 0.90
+
+Vin     v_vna    GND  AC 1
+R_VNA   v_vna    v_pad1in 50
+L_BOND1 v_pad1in v_pad1n  1.5e-9
+R_BOND1 v_pad1n  v_pad1n2 0.05
+C_PAD1  v_pad1n2 GND      125e-15
+R_chip1 v_pad1n2 V1       0.5
+
+* CHANGES: PGS stripped → C_SRF = 0.18 pF; spiral thicker → Rs = 5.0 Ω
+L1 V1 nL1 1.351e-9
+R1 nL1 VDPWR 5.0           ; (10/11.2)·5.6 ≈ 5.0
+C_T1 V1 GND  1.820e-12
+C_SRF1 V1 GND 0.18e-12
+
+L2 V2_in nL2 1.351e-9
+R2 nL2 GND 5.0
+C_T2 V2_in GND 1.620e-12
+C_SRF2 V2_in GND 0.18e-12
+
+K_M12 L1 L2 -0.032
+
+* v2 diff-pair OTA + v2 Cc unchanged
+Cac     V1     vin_p   14.112e-12
+RbiasIn vin_p  Vbmid_  1e7
+XMt    tail   Vbn_   GND   GND   sky130_fd_pr__nfet_01v8  W=16 L=0.5 nf=2 m=1
+XM1    fo1    vin_p  tail  GND   sky130_fd_pr__nfet_01v8  W=20 L=0.5 nf=2 m=1
+XM2    Vfo_x  Vfo    tail  GND   sky130_fd_pr__nfet_01v8  W=20 L=0.5 nf=2 m=1
+XMp1   fo1    fo1    VDPWR VDPWR sky130_fd_pr__pfet_01v8  W=40 L=0.5 nf=2 m=1
+XMp2   Vfo    fo1    VDPWR VDPWR sky130_fd_pr__pfet_01v8  W=40 L=0.5 nf=2 m=1
+
+Cc      Vfo    V2_in   1.362e-12
+
+.param eps=0
+Ceps    V1     V2_in   'max(2*1.820e-12*eps, 1e-21)'
+
+Rfb     Vfo    Vbmid_  1e7
+R_chip2 V2_in  v_pad2n  0.5
+C_PAD2  v_pad2n GND    125e-15
+L_BOND2 v_pad2n v_pad2  1.5e-9
+
+.ac dec 8000 0.5e9 5e9
+.print ac vm(V1)
+.end
