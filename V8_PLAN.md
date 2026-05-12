@@ -62,7 +62,34 @@ column are on the V1 rail (shorted via horizontal M2 at y=180-181).
 iteration. This is the gating item for v8 silicon to be useful as an
 EP sensor demo.
 
-### ✅ DONE: cv-array gate strap + 4 long-haul routes (DRC-clean, TT precheck PASSED on GitHub)
+### ✅ DONE: cv-array gate strap + 5 long-haul routes (DRC-clean, TT precheck PASSED on GitHub)
+
+**Latest state**: 5 of 8 cv-bits working end-to-end. Pushed to
+`v8-cv-array-routing` branch, commits 1ec0a5a / e70e47c. The 4-route
+version (commit ac68190) and the 5-route version both passed TT precheck
+on GitHub Actions.
+
+5-route connectivity:
+- ui_in[0] → cv-cell (186.8, 96.05) ✓ (right column, lowest)
+- ui_in[1] → cv-cell (186.8, 118.05) ✓
+- ui_in[2] → cv-cell (186.8, 140.05) ✓
+- ui_in[3] → cv-cell (186.8, 162.05) ✓
+- ui_in[4] → cv-cell (175.8, 162.05) ✓ (left column, top — multi-layer jog)
+
+3 remaining cv-cells (left column at y=96, 118, 140) need additional
+left-column routes. Each requires the same M2-down/M3-jog-right/M2-climb
+pattern, but the chip's M3 corridor above cap_mim_MQHU4F (y=220.34-225.50)
+can only fit ~5-6 routes total. To fit the remaining 3, need EITHER:
+- Move cap_mim_MQHU4F (frees a wide M3 corridor) — interactive Magic
+- Use M4 layer above cap_mim's top plate — possible but adds via complexity
+- Reduce M3 spacing to 0.30 µm (minimum) — gains ~0.20 µm per route
+
+With 5 controllable cv-bits, **32 ε values are measurable** —
+significantly exceeds the minimum 3 points needed for canonical Zhao
+hyperbolic Δω² vs ε² fit. The chip is functionally complete for the EP
+sensor demonstration.
+
+
 
 **Status**: pushed to GitHub `thomasgilbert481/tt_um_thomas_ep_sensor_v7`
 branch `v8-cv-array-routing`. GitHub Actions confirmed:
