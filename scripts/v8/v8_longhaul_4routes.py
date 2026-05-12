@@ -35,14 +35,14 @@ def main():
         # M3 horizontal at y=y_H..y_H+0.50 (taller, ≥0.15 via2 enclosure each y side)
         m3_h = gdstk.rectangle((ui_x - 0.25, y_H), (m2_x1 + 0.15, y_H + 0.50),
                                 layer=LAY_M3[0], datatype=LAY_M3[1])
-        # M3 vertical from y_H up to chip top at ui_in_x
-        m3_v = gdstk.rectangle((ui_x - 0.20, y_H), (ui_x + 0.20, 225.55),
+        # M3 vertical from y_H up to y=223.90 (0.30 µm spacing below leftcol M3 H at y=224.20)
+        m3_v = gdstk.rectangle((ui_x - 0.20, y_H), (ui_x + 0.20, 223.90),
                                 layer=LAY_M3[0], datatype=LAY_M3[1])
         # M4 extension below ui_in pad
         m4_ext = gdstk.rectangle((ui_x - 0.20, y_H + 0.10), (ui_x + 0.20, 224.86),
                                   layer=LAY_M4[0], datatype=LAY_M4[1])
-        # via3 (0.20x0.20) inside M4 extension
-        v3_y = (y_H + 224.0) / 2
+        # via3 (0.20x0.20) inside M4 extension and inside M3 V (which ends at 223.90)
+        v3_y = (y_H + 0.30 + 223.86) / 2
         via3 = gdstk.rectangle((ui_x - 0.10, v3_y - 0.10), (ui_x + 0.10, v3_y + 0.10),
                                 layer=LAY_V3[0], datatype=LAY_V3[1])
         for poly in (m2_v, via2, m3_h, m3_v, m4_ext, via3):
