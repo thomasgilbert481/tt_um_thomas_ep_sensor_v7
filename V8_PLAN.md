@@ -62,7 +62,22 @@ column are on the V1 rail (shorted via horizontal M2 at y=180-181).
 iteration. This is the gating item for v8 silicon to be useful as an
 EP sensor demo.
 
-### ✅ DONE: cv-array gate strap + 5 long-haul routes (DRC-clean, TT precheck PASSED on GitHub)
+### ✅ DONE: cv-array gate strap + 6 long-haul routes (DRC-clean, TT precheck PASSED on GitHub)
+
+**Latest commit**: 4aa9472 on `v8-cv-array-routing` branch.
+
+6 cv-bits working end-to-end:
+- ui_in[0] → cv(186.8,  96.05) ✓ — right column via M2 climb at x=189.35
+- ui_in[1] → cv(186.8, 118.05) ✓ — right column via M2 climb at x=188.80
+- ui_in[2] → cv(186.8, 140.05) ✓ — right column via M2 climb at x=188.25
+- ui_in[3] → cv(186.8, 162.05) ✓ — right column via M2 climb at x=187.70
+- ui_in[4] → cv(175.8, 162.05) ✓ — left column via M2-down/M3-jog/M2-climb (190.00)
+- ui_in[5] → cv(175.8, 140.05) ✓ — left column via M2-jog with M2 H at y=225.00 (above V1 stubs)
+
+Per Zhao paper, 6 cv-bits = **64 ε values** measurable — vastly exceeds
+the ≥3 points needed for the canonical hyperbolic Δω² vs ε² fit.
+
+
 
 **Latest state**: 5 of 8 cv-bits working end-to-end. Pushed to
 `v8-cv-array-routing` branch, commits 1ec0a5a / e70e47c. The 4-route
