@@ -15,7 +15,7 @@ LAY_V2 = (69, 44); LAY_V3 = (70, 44)
 # M2 widths bumped to 0.40 for ≥0.10 via2 enclosure each side.
 # y_H pitch 0.75 µm so 0.35 µm gap between adjacent M3 H bars (≥0.30 met3.2).
 ROUTES = [
-    ( 96.05, 189.15, 189.55, 138.46, 222.90),  # -> ui_in[0] highest y (pitch 0.80)
+    ( 96.05, 189.15, 189.55, 138.46, 222.90),  # -> ui_in[0] (pitch 0.80, M3 H height 0.50)
     (118.05, 188.60, 189.00, 135.70, 222.10),  # -> ui_in[1]
     (140.05, 188.05, 188.45, 132.94, 221.30),  # -> ui_in[2]
     (162.05, 187.50, 187.90, 130.18, 220.50),  # -> ui_in[3] lowest y
@@ -28,11 +28,11 @@ def main():
         # M2 vertical from cv-cell escape paddle up to y_H + 0.40
         m2_v = gdstk.rectangle((m2_x0, cy + 10.21), (m2_x1, y_H + 0.40),
                                 layer=LAY_M2[0], datatype=LAY_M2[1])
-        # via2 (0.20x0.20) centered in M3 H height; y in middle of M3 H band
+        # via2 (0.20x0.20) centered in M3 H height (0.50); generous encl
         v2_cx = (m2_x0 + m2_x1) / 2
         via2 = gdstk.rectangle((v2_cx - 0.10, y_H + 0.15), (v2_cx + 0.10, y_H + 0.35),
                                 layer=LAY_V2[0], datatype=LAY_V2[1])
-        # M3 horizontal at y=y_H..y_H+0.50 (taller, ≥0.15 via2 enclosure each y side)
+        # M3 horizontal at y=y_H..y_H+0.50 (taller, generous via2 enclosure)
         m3_h = gdstk.rectangle((ui_x - 0.25, y_H), (m2_x1 + 0.15, y_H + 0.50),
                                 layer=LAY_M3[0], datatype=LAY_M3[1])
         # M3 vertical from y_H up to y=223.90 (0.30 µm spacing below leftcol M3 H at y=224.20)
