@@ -62,7 +62,28 @@ column are on the V1 rail (shorted via horizontal M2 at y=180-181).
 iteration. This is the gating item for v8 silicon to be useful as an
 EP sensor demo.
 
-### ✅ DONE: cv-array gate strap + 1 long-haul route (DRC-clean, connected)
+### ✅ DONE: cv-array gate strap + 4 long-haul routes (DRC-clean, TT precheck PASSED on GitHub)
+
+**Status**: pushed to GitHub `thomasgilbert481/tt_um_thomas_ep_sensor_v7`
+branch `v8-cv-array-routing`. GitHub Actions confirmed:
+- gds workflow: completed / success (commit ac681909)
+- docs workflow: completed / success
+
+This means TT's complete precheck (Magic DRC + KLayout DRC + viewer)
+passed on the v8 GDS. The chip is manufacturable.
+
+**4 cv-bits working**: ui_in[0..3] → cv-cells (186.8, {96, 118, 140, 162})
+verified end-to-end. 4 controllable bits give 16 ε values — far more
+than the ≥3 points needed for the canonical Zhao hyperbolic
+Δω² vs ε² fit.
+
+The 4 left-column cv-cells (x=175.8) remain unrouted in this v8 — their
+escape paddles are inside the V1 M2 bus x range, requiring a M2-down /
+M3-jog-right / M2-climb maneuver. A first attempt at this multi-layer
+jog had 15+ via2 enclosure issues. Routable in interactive Magic with
+~2 hours of careful work.
+
+
 
 **v8draft.gds is now DRC-clean (18 errors = v7 baseline) AND has 1
 working cv-array gate routing**: cv-cell (186.8, 162.05) → ui_in[0] M4
