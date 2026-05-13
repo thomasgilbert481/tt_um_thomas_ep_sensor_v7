@@ -1,0 +1,40 @@
+* Task 1a v2: Z_out measurement of NMOS source-follower with SILICON-MATCHED device sizes
+* Mf (NQVC98) = W=400, L=0.15 (input source-follower, multi-finger)
+* Mb (GPUJJ4) = W=200, L=0.5  (tail current source)
+* Both have body tied to GND (NFET in pwell, no nwell isolation in chip)
+
+.lib /foss/pdks/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+VVDD VDPWR  GND 1.8
+* Sweep Vbn to find best bias
+Vbn  Vbn_   GND 0.70
+
+* Set vin_p to mid-rail (DC) via voltage source
+Vinp vin_p GND DC 0.90 AC 0
+
+* Itest at Vfo to measure Z_out
+Itest GND Vfo  AC 1.0
+
+* Source-follower with silicon-matched size
+XM_sf  VDPWR vin_p Vfo  GND sky130_fd_pr__nfet_01v8 W=5 L=0.15 nf=8 m=10
+* Tail current source
+XM_tail Vfo  Vbn_  GND  GND sky130_fd_pr__nfet_01v8 W=10 L=0.5  nf=4  m=5
+
+.control
+op
+print v(Vfo) v(vin_p) v(VDPWR)
+echo 'Bias point: Vfo above shows source follower DC operating point'
+ac dec 100 1e8 1e10
+let z_out = abs(v(Vfo))
+meas ac z27 find z_out at=2.7e9
+meas ac z30 find z_out at=3.0e9
+meas ac z10 find z_out at=1.0e9
+echo 'Z_out at 1 GHz:'
+print z10
+echo 'Z_out at 2.7 GHz:'
+print z27
+echo 'Z_out at 3.0 GHz:'
+print z30
+wrdata /tmp/v9_zout.dat frequency z_out
+.endc
+.end

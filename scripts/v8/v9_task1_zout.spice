@@ -1,0 +1,25 @@
+* Task 1a: Measure NMOS source-follower buffer output impedance (Z_out) at 2.7 GHz
+* Standalone buffer test (no tank): force current into Vfo, measure V/I = Z_out
+*
+* Setup: Vfo is buffer output. Disconnect tank. Apply small AC current Itest.
+* Z_out(jω) = V(Vfo) / Itest
+
+.lib /foss/pdks/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+VVDD VDPWR  GND 1.8
+Vbn  Vbn_   GND 0.85
+Vbmid Vbmid_ GND 0.90
+
+* Drive input gate at Vbmid (DC), AC=0 (so we measure SF output Z without input drive)
+Vinput vin_p Vbmid_ DC 0 AC 0
+
+* AC current source at Vfo node
+Itest  GND  Vfo  AC 1.0
+
+* NMOS source-follower
+XM_sf  VDPWR vin_p Vfo  Vfo_b sky130_fd_pr__nfet_01v8 W=20 L=0.5 nf=10 m=2
+XM_tail Vfo  Vbn_  GND  GND  sky130_fd_pr__nfet_01v8 W=10 L=0.5 nf=4  m=2
+Vfo_b_short Vfo_b GND 0
+
+* Standalone -- no tank load on Vfo for now, just measure Z_out
+.end
