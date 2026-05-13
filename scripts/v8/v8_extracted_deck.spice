@@ -1,0 +1,44 @@
+* v8 EP sensor — using EXTRACTED cap values from v13 GDS netlist
+* C_T1 = 1.85 pF, C_T2 = 0.84 pF, Cc = 1.40 pF
+* β = sqrt(C_T1/(C_T2+Cc)) = sqrt(1.85/2.24) = 0.909 (off EP)
+
+.lib /foss/pdks/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+Vin     v_vna    GND  AC 1
+R_VNA   v_vna    v_pad1in 50
+L_BOND1 v_pad1in v_pad1n  1.5e-9
+R_BOND1 v_pad1n  v_pad1n2 0.05
+C_PAD1  v_pad1n2 GND      125e-15
+R_chip1 v_pad1n2 V1       0.5
+
+* Tank 1 — EXTRACTED C_T1 = 1.85 pF
+L1 V1 nL1 1.351e-9
+R1 nL1 0 5.0
+.param CT1_extra=0
+C_T1 V1 GND  '1.845e-12 + CT1_extra'
+C_SRF1 V1 GND 0.18e-12
+
+* Tank 2 — EXTRACTED C_T2 = 0.84 pF
+L2 V2_in nL2 1.351e-9
+R2 nL2 0 5.0
+C_T2 V2_in GND 0.836e-12
+C_SRF2 V2_in GND 0.18e-12
+
+K_M12 L1 L2 -0.032
+
+* IDEAL UNIDIRECTIONAL BUFFER
+E_buf Vbuf 0 V1 0 1.0
+
+* EXTRACTED Cc = 1.40 pF (W8UZ5N)
+Cc      Vbuf    V2_in   1.398e-12
+
+.param eps=0
+Ceps    V1     V2_in   'max(2*1.845e-12*eps, 1e-21)'
+
+R_chip2 V2_in  v_pad2n  0.5
+C_PAD2  v_pad2n GND    125e-15
+L_BOND2 v_pad2n v_pad2  1.5e-9
+R_load  v_pad2  GND     50
+
+.ac dec 8000 0.5e9 5e9
+.end
