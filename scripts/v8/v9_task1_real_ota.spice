@@ -1,0 +1,64 @@
+* Task 1: EP sensor with NMOS source-follower buffer (no PMOS — matches silicon)
+* DC operating point first, then AC sweep
+* Source-follower: M_sf gate=vin_p, drain=VDPWR, source=Vfo
+* NMOS tail: M_tail gate=Vbn, drain=Vfo, source=GND
+
+.lib /foss/pdks/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+
+* Supplies
+VVDD VDPWR  GND 1.8
+Vbn  Vbn_   GND 0.85
+Vbmid Vbmid_ GND 0.90
+
+* Input AC source (probe at V1)
+Vin     v_vna    GND  DC 0 AC 1
+R_VNA   v_vna    v_pad1in 50
+L_BOND1 v_pad1in v_pad1n  1.5e-9
+R_BOND1 v_pad1n  v_pad1n2 0.05
+C_PAD1  v_pad1n2 GND      125e-15
+R_chip1 v_pad1n2 V1       0.5
+
+* Tank 1 (V1) — extracted GDS values
+L1 V1 nL1 1.351e-9
+R1 nL1 VDPWR 5.0
+C_T1 V1 GND  1.845e-12
+C_SRF1 V1 GND 0.18e-12
+
+* Tank 2 (V2_in) — extracted GDS values
+L2 V2_in nL2 1.351e-9
+R2 nL2 GND 5.0
+C_T2 V2_in GND 0.836e-12
+C_SRF2 V2_in GND 0.18e-12
+
+* Spiral mutual coupling (will measure separately in task 6)
+K_M12 L1 L2 -0.032
+
+* AC coupling V1 to OTA input gate
+Cac     V1     vin_p   14.112e-12
+* DC bias for vin_p (high-Z mid-rail)
+RbiasIn vin_p  Vbmid_  1e7
+
+* NMOS source-follower buffer (no PMOS!)
+* M_sf: input pair as source-follower, gate=vin_p, drain=VDPWR, source=Vfo
+* Sized for silicon-like: W=200µm, L=0.5µm, multi-finger
+XM_sf  VDPWR vin_p Vfo  Vfo_b sky130_fd_pr__nfet_01v8 W=20 L=0.5 nf=10 m=2
+* M_tail: NMOS current source between Vfo and GND
+XM_tail Vfo  Vbn_  GND  GND  sky130_fd_pr__nfet_01v8 W=10 L=0.5 nf=4  m=2
+* Body-bias node Vfo_b: tied to GND (typical for NMOS in pwell, with TT not deep nwell)
+Vfo_b_short Vfo_b GND 0
+
+* Forward coupling cap Vfo -> V2_in (extracted GDS Cc = 1.40 pF)
+Cc      Vfo    V2_in   1.398e-12
+
+* Type-2 perturbation: cv-array adds Ceps directly between V1 and V2_in
+.param eps=0
+Ceps    V1     V2_in   'max(2*1.845e-12*eps, 1e-21)'
+
+* Output port (V2_in probe)
+Rfb     Vfo    Vbmid_  1e7
+R_chip2 V2_in  v_pad2n  0.5
+C_PAD2  v_pad2n GND    125e-15
+L_BOND2 v_pad2n v_pad2  1.5e-9
+R_load  v_pad2 GND      50
+
+.end

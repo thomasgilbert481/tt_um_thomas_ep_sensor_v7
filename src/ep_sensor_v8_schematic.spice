@@ -1,0 +1,93 @@
+* v8 LVS-matched schematic
+* Match silicon topology with multi-finger transistor PCells
+* All transistor sizes match GDS cells:
+*   Mf (NQVC98): W=5 L=0.15 nf=80 m=1
+*   Mb (GPUJJ4): W=10 L=0.5 nf=20 m=1
+*   Mout (3FYCX3): W=5 L=0.15 nf=40 m=1
+*   Mout_b (SQMHJC): W=10 L=0.5 nf=10 m=1
+*   mg0..mg7 (4WRHDT): W=20 L=0.15 nf=4 m=1 (lvt)
+* All cap_mim sizes match GDS cells
+
+.subckt tt_um_thomas_ep_sensor V1 V2_in Vfo Vbn_top Vbn_bot Vbmid VDPWR VGND ui_in0 ui_in1 ui_in2 ui_in3 ui_in4 ui_in5 ui_in6 ui_in7
+
+* === Bias generation: Vbn_bot and Vbn_top from resistor divider on VDPWR ===
+XRdiv_top  net_bnd VDPWR sky130_fd_pr__res_xhigh_po_0p35 l=58.11u
+XRdiv_bot  Vbn_bot net_bnd sky130_fd_pr__res_xhigh_po_0p35 l=72.37u
+XRbn_top   Vbn_top net_bnt sky130_fd_pr__res_xhigh_po_0p35 l=0.10089m
+XRbn_bot   VGND net_bnt sky130_fd_pr__res_xhigh_po_0p35 l=0.26367m
+XRbn_out_top Vfo net_bo sky130_fd_pr__res_xhigh_po_0p35 l=0.10089m
+XRbn_out_bot net_bo Vfo_x sky130_fd_pr__res_xhigh_po_0p35 l=0.14715m
+
+* === Decoupling caps ===
+XCdec_bn      Vbn_top  VGND  VGND sky130_fd_pr__cap_mim_m3_1 W=22 L=22
+XCdec_bn_out  Vfo_x    VGND  VGND sky130_fd_pr__cap_mim_m3_1 W=15.8 L=15.8
+XCdec_bmid    Vbmid    VGND  VGND sky130_fd_pr__cap_mim_m3_1 W=22 L=22
+XCff          Vfo_x    VGND  VGND sky130_fd_pr__cap_mim_m3_1 W=10 L=10
+
+* === Tank capacitors ===
+XCT1  V1     VGND  VGND sky130_fd_pr__cap_mim_m3_1 W=30   L=30
+XCT2  V2_in  VGND  VGND sky130_fd_pr__cap_mim_m3_1 W=20.2 L=20.2
+XCc   Vfo    V2_in VGND sky130_fd_pr__cap_mim_m3_1 W=26.1 L=26.1
+XCac_v2 V2_in VGND  VGND sky130_fd_pr__cap_mim_m3_1 W=20   L=20
+
+* === Cac_in: large compound cap (MQHU4F) approximated as 11 parallel W=21,L=21 ===
+XCac_in_a V1 vin_p VGND sky130_fd_pr__cap_mim_m3_1 W=21 L=21
+XCac_in_b V1 vin_p VGND sky130_fd_pr__cap_mim_m3_1 W=21 L=21
+XCac_in_c V1 vin_p VGND sky130_fd_pr__cap_mim_m3_1 W=21 L=21
+XCac_in_d V1 vin_p VGND sky130_fd_pr__cap_mim_m3_1 W=21 L=21
+XCac_in_e V1 vin_p VGND sky130_fd_pr__cap_mim_m3_1 W=21 L=21
+XCac_in_f V1 vin_p VGND sky130_fd_pr__cap_mim_m3_1 W=21 L=21
+XCac_in_g V1 vin_p VGND sky130_fd_pr__cap_mim_m3_1 W=21 L=21
+XCac_in_h V1 vin_p VGND sky130_fd_pr__cap_mim_m3_1 W=21 L=21
+XCac_in_i V1 vin_p VGND sky130_fd_pr__cap_mim_m3_1 W=21 L=21
+XCac_in_j V1 vin_p VGND sky130_fd_pr__cap_mim_m3_1 W=21 L=21
+XCac_in_k V1 vin_p VGND sky130_fd_pr__cap_mim_m3_1 W=21 L=21
+
+* === Spiral inductors (modeled as L+R) ===
+* L1 = 1.35 nH, R = 5 Ω
+* Treated as 2-port: V1 to VDPWR
+L1_spiral V1 nL1 1.351n
+R1_spiral nL1 VDPWR 5.0
+L2_spiral V2_in nL2 1.351n
+R2_spiral nL2 VGND 5.0
+
+* === cv-array: 8 NMOS pass FETs in series with cv-caps ===
+* Cv0 (AEZ4RW): 20fF, controlled by ui_in7 (per v8 routing: cv(175.8,96)=cv0 → ui_in7)
+* Each Cv has C2 node connected to V1 (signal), C1 to NMOS drain
+XCv0 V1 mg0_d VGND sky130_fd_pr__cap_mim_m3_1 W=3.16 L=3.16
+Xmg0 V2_in ui_in7 mg0_d VGND sky130_fd_pr__nfet_01v8_lvt W=20 L=0.15 nf=4 m=1
+
+XCv1 V1 mg1_d VGND sky130_fd_pr__cap_mim_m3_1 W=4.47 L=4.47
+Xmg1 V2_in ui_in6 mg1_d VGND sky130_fd_pr__nfet_01v8_lvt W=20 L=0.15 nf=4 m=1
+
+XCv2 V1 mg2_d VGND sky130_fd_pr__cap_mim_m3_1 W=6.32 L=6.32
+Xmg2 V2_in ui_in5 mg2_d VGND sky130_fd_pr__nfet_01v8_lvt W=20 L=0.15 nf=4 m=1
+
+XCv3 V1 mg3_d VGND sky130_fd_pr__cap_mim_m3_1 W=8.94 L=8.94
+Xmg3 V2_in ui_in4 mg3_d VGND sky130_fd_pr__nfet_01v8_lvt W=20 L=0.15 nf=4 m=1
+
+XCv4 V1 mg4_d VGND sky130_fd_pr__cap_mim_m3_1 W=12.65 L=12.65
+Xmg4 V2_in ui_in0 mg4_d VGND sky130_fd_pr__nfet_01v8_lvt W=20 L=0.15 nf=4 m=1
+
+XCv5 V1 mg5_d VGND sky130_fd_pr__cap_mim_m3_1 W=17.89 L=17.89
+Xmg5 V2_in ui_in1 mg5_d VGND sky130_fd_pr__nfet_01v8_lvt W=20 L=0.15 nf=4 m=1
+
+XCv6 V1 mg6_d VGND sky130_fd_pr__cap_mim_m3_1 W=25.3 L=25.3
+Xmg6 V2_in ui_in2 mg6_d VGND sky130_fd_pr__nfet_01v8_lvt W=20 L=0.15 nf=4 m=1
+
+XCv7 V1 mg7_d VGND sky130_fd_pr__cap_mim_m3_1 W=25.31 L=25.31
+Xmg7 V2_in ui_in3 mg7_d VGND sky130_fd_pr__nfet_01v8_lvt W=20 L=0.15 nf=4 m=1
+
+* === OTA: NMOS-only 2-stage (Mf, Mb, Mout, Mout_b) ===
+* Mb: tail current source
+XMb tail Vbn_bot VGND VGND sky130_fd_pr__nfet_01v8 W=10 L=0.5 nf=20 m=1
+* Mf: input source-follower
+XMf VDPWR vin_p Vfo VGND sky130_fd_pr__nfet_01v8 W=5 L=0.15 nf=80 m=1
+* Mout: output amp
+XMout VDPWR Vfo Vfo_x VGND sky130_fd_pr__nfet_01v8 W=5 L=0.15 nf=40 m=1
+* Mout_b: output tail
+XMout_b Vfo_x Vbn_top VGND VGND sky130_fd_pr__nfet_01v8 W=10 L=0.5 nf=10 m=1
+
+.ends tt_um_thomas_ep_sensor
+
+.end
